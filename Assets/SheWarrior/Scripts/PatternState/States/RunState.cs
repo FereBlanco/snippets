@@ -1,21 +1,23 @@
 using UnityEngine;
 
-public class WalkState : IState
+public class RunState : IState
 {
     private PlayerController m_Player;
 
-    public WalkState(PlayerController player)
+    public RunState(PlayerController player)
     {
         m_Player = player;
     }
 
     public void Enter()
     {
-        // player.Animator.SetBool("isWalk", true);
+        m_Player.Animator.SetBool(Constants.BOOL_STATE_TO_RUN, true);
     }
 
     public void Execute()
     {
+        m_Player.Animator.SetBool(Constants.BOOL_STATE_TO_RUN, false);
+
         // if we are no longer grounded, transition to jumping
         if (!m_Player.IsGrounded)
         {
@@ -31,6 +33,5 @@ public class WalkState : IState
 
     public void Exit()
     {
-        // player.Animator.SetBool("isWalk", false);
     }	
 }

@@ -3,6 +3,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(Collider2D))]
+[RequireComponent(typeof(SpriteRenderer))]
 public class PlayerController : MonoBehaviour
 {
     private PlayerStateMachine m_PlayerStateMachine;
@@ -11,13 +12,16 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D m_Rigidbody;
     public Rigidbody2D Rigidbody { get => m_Rigidbody; }
     private Collider2D m_Collider;
+    [SerializeField] private Animator m_Animator;
+    public Animator Animator { get => m_Animator; }
+    private SpriteRenderer m_SpriteRenderer;
 
     public float m_Speed = 4f;
     public float m_JumpForce = 6f;
 
     private Vector3 m_GroundCheckVectorOrigin;
-    private float m_GroundCheckFactor = 1.05f;
-    private float m_GroundCheckLength = 0.2f;
+    private float m_GroundCheckFactor = 1.08f;
+    private float m_GroundCheckLength = 0.05f;
 
 
     private bool m_IsGrounded;
@@ -25,8 +29,11 @@ public class PlayerController : MonoBehaviour
 
     private void Awake()
     {
+        Assert.IsNotNull(m_Animator, "ERROR: m_Animator not assined in PlayerController.cs");
+
         m_Rigidbody = GetComponent<Rigidbody2D>();
         m_Collider = GetComponent<Collider2D>();
+        m_SpriteRenderer = Animator.GetComponent<SpriteRenderer>();
 
         m_GroundCheckVectorOrigin = new Vector3(0f, -1 * m_GroundCheckFactor * m_Collider.bounds.extents.y, 0f);
 
@@ -50,12 +57,17 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
+        #if UNITY_EDITOR
+        Debug.DrawRay(transform.position + m_GroundCheckVectorOrigin, m_GroundCheckLength * Vector2.down, Color.red);
+        #endif
         var hit = Physics2D.Raycast(transform.position + m_GroundCheckVectorOrigin, m_GroundCheckLength * Vector2.down, m_GroundCheckLength);
         m_IsGrounded = (null != hit.transform && hit.transform.gameObject.layer == LayerMask.NameToLayer(Constants.LAYER_GROUND));
         
+        float horizontalInput = Input.GetAxis(Constants.AXIS_HORIZONTAL);
+        if (horizontalInput > 0) m_SpriteRenderer.flipX = false;
+        if (horizontalInput < 0) m_SpriteRenderer.flipX = true;
         if (m_IsGrounded)
         {
-            float horizontalInput = Input.GetAxis(Constants.AXIS_HORIZONTAL);
             m_Rigidbody.velocity = new Vector2(horizontalInput * m_Speed, m_Rigidbody.velocity.y);
         }
         
@@ -64,5 +76,6 @@ public class PlayerController : MonoBehaviour
     private void OnGUI()
     {
         GUI.Label(new Rect(10, 10, 1000, 20), "Player State: " + PlayerStateMachine.CurrentState);
+        GUI.Label(new Rect(10, 30, 1000, 20), "m_SpriteRenderer.flipX: " + m_SpriteRenderer.flipX);
     }
 }

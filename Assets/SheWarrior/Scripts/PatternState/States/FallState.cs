@@ -11,11 +11,13 @@ public class FallState : IState
 
     public void Enter()
     {
-        // player.Animator.SetBool("isFall", true);
+        m_Player.Animator.SetBool(Constants.BOOL_STATE_TO_FALL, true);
     }
 
     public void Execute()
     {
+        m_Player.Animator.SetBool(Constants.BOOL_STATE_TO_FALL, false);
+        
         if (m_Player.IsGrounded)
         {
             if (Mathf.Abs(m_Player.Rigidbody.velocity.x) <= 0.1f)
@@ -24,13 +26,12 @@ public class FallState : IState
             }
             else
             {
-                m_Player.PlayerStateMachine.TransitionTo(m_Player.PlayerStateMachine.walkState);
+                m_Player.PlayerStateMachine.TransitionTo(m_Player.PlayerStateMachine.runState);
             }
         }
     }
 
     public void Exit()
     {
-        // player.Animator.SetBool("isFall", false);
     }	
 }

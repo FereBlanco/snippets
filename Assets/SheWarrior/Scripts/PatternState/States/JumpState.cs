@@ -11,11 +11,13 @@ public class JumpState : IState
 
     public void Enter()
     {
-        // player.Animator.SetBool("isJump", true);
+        m_Player.Animator.SetBool(Constants.BOOL_STATE_TO_JUMP, true);
     }
 
     public void Execute()
     {
+        m_Player.Animator.SetBool(Constants.BOOL_STATE_TO_JUMP, false);
+        
         if (m_Player.Rigidbody.velocity.y < 0)
         {
             m_Player.PlayerStateMachine.TransitionTo(m_Player.PlayerStateMachine.fallState);
@@ -24,6 +26,5 @@ public class JumpState : IState
 
     public void Exit()
     {
-        // player.Animator.SetBool("isJump", false);
     }	
 }

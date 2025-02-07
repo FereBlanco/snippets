@@ -7,14 +7,14 @@ public class PlayerStateMachine
     public IState CurrentState { get; private set; }
 
     public IdleState idleState;
-    public WalkState walkState;
+    public RunState runState;
     public JumpState jumpState;
     public FallState fallState;
 
     public PlayerStateMachine(PlayerController player)
     {
         idleState = new IdleState(player);
-        walkState = new WalkState(player);
+        runState = new RunState(player);
         jumpState = new JumpState(player);
         fallState = new FallState(player);
     }
