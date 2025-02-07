@@ -10,6 +10,7 @@ public class PlayerStateMachine
     public RunState runState;
     public JumpState jumpState;
     public FallState fallState;
+    public CrouchState crouchState;
 
     public PlayerStateMachine(PlayerController player)
     {
@@ -17,6 +18,7 @@ public class PlayerStateMachine
         runState = new RunState(player);
         jumpState = new JumpState(player);
         fallState = new FallState(player);
+        crouchState = new CrouchState(player);
     }
 
     public void Initialize(IState startingState)

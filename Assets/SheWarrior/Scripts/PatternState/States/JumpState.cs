@@ -11,12 +11,12 @@ public class JumpState : IState
 
     public void Enter()
     {
-        m_Player.Animator.SetBool(Constants.BOOL_STATE_TO_JUMP, true);
+        m_Player.Animator.SetBool(Constants.BOOL_STATE_JUMP, true);
     }
 
     public void Execute()
     {
-        m_Player.Animator.SetBool(Constants.BOOL_STATE_TO_JUMP, false);
+        m_Player.Animator.SetBool(Constants.BOOL_STATE_JUMP, false);
         
         if (m_Player.Rigidbody.velocity.y < 0)
         {

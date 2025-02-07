@@ -11,12 +11,12 @@ public class RunState : IState
 
     public void Enter()
     {
-        m_Player.Animator.SetBool(Constants.BOOL_STATE_TO_RUN, true);
+        m_Player.Animator.SetBool(Constants.BOOL_STATE_RUN, true);
     }
 
     public void Execute()
     {
-        m_Player.Animator.SetBool(Constants.BOOL_STATE_TO_RUN, false);
+        m_Player.Animator.SetBool(Constants.BOOL_STATE_RUN, false);
 
         // if we are no longer grounded, transition to jumping
         if (!m_Player.IsGrounded)

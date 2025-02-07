@@ -11,12 +11,12 @@ public class FallState : IState
 
     public void Enter()
     {
-        m_Player.Animator.SetBool(Constants.BOOL_STATE_TO_FALL, true);
+        m_Player.Animator.SetBool(Constants.BOOL_STATE_FALL, true);
     }
 
     public void Execute()
     {
-        m_Player.Animator.SetBool(Constants.BOOL_STATE_TO_FALL, false);
+        m_Player.Animator.SetBool(Constants.BOOL_STATE_FALL, false);
         
         if (m_Player.IsGrounded)
         {

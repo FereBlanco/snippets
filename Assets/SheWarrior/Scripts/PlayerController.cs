@@ -24,8 +24,12 @@ public class PlayerController : MonoBehaviour
     private float m_GroundCheckLength = 0.05f;
 
 
+    private float m_HorizontalInput;
+    private float m_VerticalInput;
     private bool m_IsGrounded;
     public bool IsGrounded { get => m_IsGrounded;}
+    private bool m_IsCrouched;
+    public bool IsCrouched { get => m_IsCrouched; }
 
     private void Awake()
     {
@@ -57,18 +61,21 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
+         m_HorizontalInput = Input.GetAxis(Constants.AXIS_HORIZONTAL);
+         m_VerticalInput = Input.GetAxis(Constants.AXIS_VERTICAL);
+
         #if UNITY_EDITOR
         Debug.DrawRay(transform.position + m_GroundCheckVectorOrigin, m_GroundCheckLength * Vector2.down, Color.red);
         #endif
         var hit = Physics2D.Raycast(transform.position + m_GroundCheckVectorOrigin, m_GroundCheckLength * Vector2.down, m_GroundCheckLength);
         m_IsGrounded = (null != hit.transform && hit.transform.gameObject.layer == LayerMask.NameToLayer(Constants.LAYER_GROUND));
+        m_IsCrouched = m_IsGrounded && m_VerticalInput < 0;
         
-        float horizontalInput = Input.GetAxis(Constants.AXIS_HORIZONTAL);
-        if (horizontalInput > 0) m_SpriteRenderer.flipX = false;
-        if (horizontalInput < 0) m_SpriteRenderer.flipX = true;
+        if (m_HorizontalInput > 0) m_SpriteRenderer.flipX = false;
+        if (m_HorizontalInput < 0) m_SpriteRenderer.flipX = true;
         if (m_IsGrounded)
         {
-            m_Rigidbody.velocity = new Vector2(horizontalInput * m_Speed, m_Rigidbody.velocity.y);
+            m_Rigidbody.velocity = new Vector2(m_HorizontalInput * m_Speed, m_Rigidbody.velocity.y);
         }
         
     }
@@ -76,6 +83,5 @@ public class PlayerController : MonoBehaviour
     private void OnGUI()
     {
         GUI.Label(new Rect(10, 10, 1000, 20), "Player State: " + PlayerStateMachine.CurrentState);
-        GUI.Label(new Rect(10, 30, 1000, 20), "m_SpriteRenderer.flipX: " + m_SpriteRenderer.flipX);
     }
 }
