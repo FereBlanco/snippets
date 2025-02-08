@@ -12,4 +12,5 @@ public static class Constants
     public static string BOOL_STATE_JUMP = "isJump";
     public static string BOOL_STATE_FALL = "isFall";
     public static string BOOL_STATE_CROUCH = "isCrouch";
+    public static string BOOL_STATE_CROUCH_TO_IDLE = "isCrouchToIdle";
 }

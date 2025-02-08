@@ -61,15 +61,15 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-         m_HorizontalInput = Input.GetAxis(Constants.AXIS_HORIZONTAL);
-         m_VerticalInput = Input.GetAxis(Constants.AXIS_VERTICAL);
+         m_HorizontalInput = Input.GetAxisRaw(Constants.AXIS_HORIZONTAL);
+         m_VerticalInput = Input.GetAxisRaw(Constants.AXIS_VERTICAL);
 
         #if UNITY_EDITOR
         Debug.DrawRay(transform.position + m_GroundCheckVectorOrigin, m_GroundCheckLength * Vector2.down, Color.red);
         #endif
         var hit = Physics2D.Raycast(transform.position + m_GroundCheckVectorOrigin, m_GroundCheckLength * Vector2.down, m_GroundCheckLength);
-        m_IsGrounded = (null != hit.transform && hit.transform.gameObject.layer == LayerMask.NameToLayer(Constants.LAYER_GROUND));
         m_IsCrouched = m_IsGrounded && m_VerticalInput < 0;
+        m_IsGrounded = (null != hit.transform && hit.transform.gameObject.layer == LayerMask.NameToLayer(Constants.LAYER_GROUND));
         
         if (m_HorizontalInput > 0) m_SpriteRenderer.flipX = false;
         if (m_HorizontalInput < 0) m_SpriteRenderer.flipX = true;
