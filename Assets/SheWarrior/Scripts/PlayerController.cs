@@ -5,8 +5,10 @@ using System.Collections;
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(Collider2D))]
 [RequireComponent(typeof(SpriteRenderer))]
+[RequireComponent(typeof(PlayerInput))]
 public class PlayerController : MonoBehaviour
 {
+    PlayerInput m_PlayerInput;
 
     private Rigidbody2D m_Rigidbody;
     public Rigidbody2D Rigidbody { get => m_Rigidbody; }
@@ -22,15 +24,13 @@ public class PlayerController : MonoBehaviour
     private float m_GroundCheckFactor = 1.08f;
     private float m_GroundCheckLength = 0.05f;
 
-
-    private float m_HorizontalInput;
-    private float m_VerticalInput;
     private bool m_IsGrounded;
     public bool IsGrounded { get => m_IsGrounded; private set { m_IsGrounded = value; } }
     private bool m_IsCrouched;
     public bool IsCrouched { get => m_IsCrouched; private set { m_IsCrouched = value; } }
     private bool m_IsAttacking;
     public bool IsAttacking { get => m_IsAttacking; private set { m_IsAttacking = value; } }
+
     [SerializeField] private AnimationClip m_AttackAnimationClip;
     private WaitForSeconds m_WaitTimeAttack;
     public WaitForSeconds WaitTimeAttack { get => m_WaitTimeAttack; }
@@ -43,43 +43,46 @@ public class PlayerController : MonoBehaviour
         m_Rigidbody = GetComponent<Rigidbody2D>();
         m_Collider = GetComponent<Collider2D>();
         m_SpriteRenderer = Animator.GetComponent<SpriteRenderer>();
+        m_PlayerInput = GetComponent<PlayerInput>();
 
         m_GroundCheckVectorOrigin = new Vector3(0f, -1 * m_GroundCheckFactor * m_Collider.bounds.extents.y, 0f);
 
         m_WaitTimeAttack = new WaitForSeconds(m_AttackAnimationClip.length);
     }
 
-    private void Update()
-    {
-        if (Input.GetKey(KeyCode.UpArrow) && IsGrounded && !IsCrouched && !IsAttacking)
-        {
-            m_Rigidbody.velocity = new Vector2(m_Rigidbody.velocity.x, m_JumpForce);
-        }
-
-        if (Input.GetKey(KeyCode.Space) && IsGrounded && !IsCrouched && !IsAttacking && 0 == m_HorizontalInput)
-        {
-            IsAttacking = true;
-            StartCoroutine(WaitAttackTime());
-        }
-    }
-
     private void FixedUpdate()
     {
-         m_HorizontalInput = Input.GetAxisRaw(Constants.AXIS_HORIZONTAL);
-         m_VerticalInput = Input.GetAxisRaw(Constants.AXIS_VERTICAL);
-
         #if UNITY_EDITOR
         Debug.DrawRay(transform.position + m_GroundCheckVectorOrigin, m_GroundCheckLength * Vector2.down, Color.red);
         #endif
         var hit = Physics2D.Raycast(transform.position + m_GroundCheckVectorOrigin, m_GroundCheckLength * Vector2.down, m_GroundCheckLength);
-        IsCrouched = IsGrounded && !IsAttacking && m_VerticalInput < 0;
+        IsCrouched = IsGrounded && !IsAttacking && m_PlayerInput.VerticalInput < 0;
         IsGrounded = (null != hit.transform && hit.transform.gameObject.layer == LayerMask.NameToLayer(Constants.LAYER_GROUND));
         
-        if (m_HorizontalInput > 0) m_SpriteRenderer.flipX = false;
-        if (m_HorizontalInput < 0) m_SpriteRenderer.flipX = true;
+        if (m_PlayerInput.HorizontalInput > 0)
+        {
+            m_SpriteRenderer.flipX = false;
+        }
+        
+        if (m_PlayerInput.HorizontalInput < 0)
+        {
+            m_SpriteRenderer.flipX = true;
+        }
+
         if (IsGrounded && !IsCrouched && !IsAttacking)
         {
-            m_Rigidbody.velocity = new Vector2(m_HorizontalInput * m_Speed, m_Rigidbody.velocity.y);
+            m_Rigidbody.velocity = new Vector2(m_PlayerInput.HorizontalInput * m_Speed, m_Rigidbody.velocity.y);
+        }
+
+        if (m_PlayerInput.VerticalInput > 0 && IsGrounded && !IsCrouched && !IsAttacking)
+        {
+            m_Rigidbody.velocity = new Vector2(m_Rigidbody.velocity.x, m_JumpForce);
+        }
+
+        if (m_PlayerInput.AttackInput && IsGrounded && !IsCrouched && !IsAttacking && 0 == m_PlayerInput.HorizontalInput)
+        {
+            IsAttacking = true;
+            StartCoroutine(WaitAttackTime());
         }
     }
 
