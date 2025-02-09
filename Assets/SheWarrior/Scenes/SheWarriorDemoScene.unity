@@ -263,8 +263,10 @@ GameObject:
   - component: {fileID: 499231180}
   - component: {fileID: 499231179}
   - component: {fileID: 499231178}
-  - component: {fileID: 499231177}
   - component: {fileID: 499231181}
+  - component: {fileID: 499231177}
+  - component: {fileID: 499231183}
+  - component: {fileID: 499231182}
   m_Layer: 0
   m_Name: SheWarrior
   m_TagString: Untagged
@@ -287,6 +289,7 @@ MonoBehaviour:
   m_Animator: {fileID: 882009657}
   m_Speed: 4
   m_JumpForce: 6
+  m_AttackAnimationClip: {fileID: 7400000, guid: 08431a71fe9f2bd45910a7a0d0a3db98, type: 2}
 --- !u!70 &499231178
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -422,6 +425,31 @@ SpriteRenderer:
   m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &499231182
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 499231176}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e03fdd6c16a725745954e83189255d31, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_PlayerController: {fileID: 499231177}
+--- !u!114 &499231183
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 499231176}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 198a8ab236a436849a2a43cc4acc91eb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &587516295
 GameObject:
   m_ObjectHideFlags: 0
