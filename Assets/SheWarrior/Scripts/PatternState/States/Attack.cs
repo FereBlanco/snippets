@@ -1,12 +1,12 @@
 using System.Collections;
 using UnityEngine;
 
-public class CrouchState : IState
+public class AttackState : IState
 {
-     private PlayerController m_PlayerController;
+    private PlayerController m_PlayerController;
     private StateMachine m_StateMachine;
 
-    public CrouchState(PlayerController player, StateMachine stateMachine)
+    public AttackState(PlayerController player, StateMachine stateMachine)
     {
         m_PlayerController = player;
         m_StateMachine = stateMachine;
@@ -14,12 +14,12 @@ public class CrouchState : IState
 
     public void Enter()
     {
-        m_PlayerController.Animator.SetBool(Constants.BOOL_STATE_CROUCH, true);
+        m_PlayerController.Animator.SetBool(Constants.BOOL_STATE_ATTACK, true);
     }
 
     public void Execute()
     {
-        if (!m_PlayerController.IsCrouched)
+        if (!m_PlayerController.IsAttacking)
         {
             m_StateMachine.TransitionTo(m_StateMachine.IdleState);
         }        
@@ -27,6 +27,6 @@ public class CrouchState : IState
 
     public void Exit()
     {
-        m_PlayerController.Animator.SetBool(Constants.BOOL_STATE_CROUCH, false);
+        m_PlayerController.Animator.SetBool(Constants.BOOL_STATE_ATTACK, false);
     }	
 }

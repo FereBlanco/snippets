@@ -2,42 +2,44 @@ using UnityEngine;
 
 public class IdleState : IState
 {
-    private PlayerController m_Player;
+    private PlayerController m_PlayerController;
+    private StateMachine m_StateMachine;
 
-    public IdleState(PlayerController player)
+    public IdleState(PlayerController player, StateMachine stateMachine)
     {
-        m_Player = player;
+        m_PlayerController = player;
+        m_StateMachine = stateMachine;
     }
 
     public void Enter()
     {
-        m_Player.Animator.SetBool(Constants.BOOL_STATE_IDLE, true);
+        m_PlayerController.Animator.SetBool(Constants.BOOL_STATE_IDLE, true);
     }
 
     public void Execute()
     {
-        m_Player.Animator.SetBool(Constants.BOOL_STATE_IDLE, false);
-        
-        // if we're no longer grounded, transition to jumping
-        if (!m_Player.IsGrounded)
+        if (m_PlayerController.IsAttacking)
         {
-            m_Player.PlayerStateMachine.TransitionTo(m_Player.PlayerStateMachine.jumpState);
+            m_StateMachine.TransitionTo(m_StateMachine.AttackState);
         }
-
-        // if we move above a minimum threshold, transition to walking
-        if (m_Player.IsGrounded && Mathf.Abs(m_Player.Rigidbody.velocity.x) > 0.1f)
+        else if (m_PlayerController.IsCrouched)
         {
-            m_Player.PlayerStateMachine.TransitionTo(m_Player.PlayerStateMachine.runState);
+            m_StateMachine.TransitionTo(m_StateMachine.CrouchState);
+        }
+        else if (!m_PlayerController.IsGrounded)
+        {
+            m_StateMachine.TransitionTo(m_StateMachine.JumpState);
+        }
+        else if (Mathf.Abs(m_PlayerController.Rigidbody.velocity.x) > 0.1f)
+        {
+            m_StateMachine.TransitionTo(m_StateMachine.RunState);
         }        
 
-        // if player pushes down button, transition to crouching
-        if (m_Player.IsCrouched)
-        {
-            m_Player.PlayerStateMachine.TransitionTo(m_Player.PlayerStateMachine.crouchState);
-        }        
+
     }
 
     public void Exit()
     {
+        m_PlayerController.Animator.SetBool(Constants.BOOL_STATE_IDLE, false);
     }	
 }

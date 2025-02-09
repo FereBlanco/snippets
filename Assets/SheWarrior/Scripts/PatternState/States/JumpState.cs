@@ -2,29 +2,30 @@ using UnityEngine;
 
 public class JumpState : IState
 {
-    private PlayerController m_Player;
+    private PlayerController m_PlayerController;
+    private StateMachine m_StateMachine;
 
-    public JumpState(PlayerController player)
+    public JumpState(PlayerController player, StateMachine stateMachine)
     {
-        m_Player = player;
+        m_PlayerController = player;
+        m_StateMachine = stateMachine;
     }
 
     public void Enter()
     {
-        m_Player.Animator.SetBool(Constants.BOOL_STATE_JUMP, true);
+        m_PlayerController.Animator.SetBool(Constants.BOOL_STATE_JUMP, true);
     }
 
     public void Execute()
     {
-        m_Player.Animator.SetBool(Constants.BOOL_STATE_JUMP, false);
-        
-        if (m_Player.Rigidbody.velocity.y < 0)
+        if (m_PlayerController.Rigidbody.velocity.y < 0)
         {
-            m_Player.PlayerStateMachine.TransitionTo(m_Player.PlayerStateMachine.fallState);
+            m_StateMachine.TransitionTo(m_StateMachine.FallState);
         }
     }
 
     public void Exit()
     {
+        m_PlayerController.Animator.SetBool(Constants.BOOL_STATE_JUMP, false);
     }	
 }

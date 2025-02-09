@@ -2,36 +2,34 @@ using UnityEngine;
 
 public class RunState : IState
 {
-    private PlayerController m_Player;
+    private PlayerController m_PlayerController;
+    private StateMachine m_StateMachine;
 
-    public RunState(PlayerController player)
+    public RunState(PlayerController player, StateMachine stateMachine)
     {
-        m_Player = player;
+        m_PlayerController = player;
+        m_StateMachine = stateMachine;
     }
 
     public void Enter()
     {
-        m_Player.Animator.SetBool(Constants.BOOL_STATE_RUN, true);
+        m_PlayerController.Animator.SetBool(Constants.BOOL_STATE_RUN, true);
     }
 
     public void Execute()
     {
-        m_Player.Animator.SetBool(Constants.BOOL_STATE_RUN, false);
-
-        // if we are no longer grounded, transition to jumping
-        if (!m_Player.IsGrounded)
+        if (!m_PlayerController.IsGrounded)
         {
-            m_Player.PlayerStateMachine.TransitionTo(m_Player.PlayerStateMachine.jumpState);
+            m_StateMachine.TransitionTo(m_StateMachine.JumpState);
         }
-
-        // if we slow to within a minimum velocity, transition to idling/standing
-        if (Mathf.Abs(m_Player.Rigidbody.velocity.x) <= 0.1f)
+        else if (Mathf.Abs(m_PlayerController.Rigidbody.velocity.x) <= 0.1f)
         {
-            m_Player.PlayerStateMachine.TransitionTo(m_Player.PlayerStateMachine.idleState);
+           m_StateMachine.TransitionTo(m_StateMachine.IdleState);
         }
     }
 
     public void Exit()
     {
+        m_PlayerController.Animator.SetBool(Constants.BOOL_STATE_RUN, false);
     }	
 }

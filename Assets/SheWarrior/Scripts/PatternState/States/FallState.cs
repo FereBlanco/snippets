@@ -2,36 +2,30 @@ using UnityEngine;
 
 public class FallState : IState
 {
-    private PlayerController m_Player;
+    private PlayerController m_PlayerController;
+    private StateMachine m_StateMachine;
 
-    public FallState(PlayerController player)
+    public FallState(PlayerController player, StateMachine stateMachine)
     {
-        m_Player = player;
+        m_PlayerController = player;
+        m_StateMachine = stateMachine;
     }
 
     public void Enter()
     {
-        m_Player.Animator.SetBool(Constants.BOOL_STATE_FALL, true);
+        m_PlayerController.Animator.SetBool(Constants.BOOL_STATE_FALL, true);
     }
 
     public void Execute()
     {
-        m_Player.Animator.SetBool(Constants.BOOL_STATE_FALL, false);
-        
-        if (m_Player.IsGrounded)
+        if (m_PlayerController.IsGrounded)
         {
-            if (Mathf.Abs(m_Player.Rigidbody.velocity.x) <= 0.1f)
-            {
-                m_Player.PlayerStateMachine.TransitionTo(m_Player.PlayerStateMachine.idleState);
-            }
-            else
-            {
-                m_Player.PlayerStateMachine.TransitionTo(m_Player.PlayerStateMachine.runState);
-            }
+            m_StateMachine.TransitionTo(m_StateMachine.IdleState);
         }
     }
 
     public void Exit()
     {
+        m_PlayerController.Animator.SetBool(Constants.BOOL_STATE_FALL, false);
     }	
 }
